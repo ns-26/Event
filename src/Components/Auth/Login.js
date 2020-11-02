@@ -1,41 +1,53 @@
 import React from "react";
-
 import "./login.css";
 import { login } from "../../_action/AuthAction";
 import { connect } from "react-redux";
 import proptype from "prop-types";
+
 class Login extends React.Component {
     state = {
-        username: "",
+        email: "",
         password: "",
     };
+
+    //handel input
     handelchange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     };
+
+    //submit form
     onSubmit = (e) => {
         e.preventDefault();
-        this.props.login(this.state.username, this.state.password);
-        if (this.props.isAuthenticated === true) {
-            this.setState({ username: "", password: "" });
-        }
+        this.props.login({ email: this.state.email, password: this.state.password });
     };
+
+    //for redirect after successful submit
+    componentDidUpdate(props) {
+        if (this.props.isAuthenticated === true && this.state.email !== "") {
+            this.setState({ email: "", password: "" });
+            this.props.history.push("/");
+        }
+    }
     render() {
         return (
             <div className="div1-login">
                 <div className="Login">
                     <div class="container">
                         <form onSubmit={this.onSubmit}>
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" value={this.state.username} required onChange={this.handelchange} />
+                            <div className="left">
+                                <label for="email"> Email </label>
+                            </div>
+                            <input type="text" id="email" name="email" value={this.state.email} required onChange={this.handelchange} />
                             <br />
-                            <label for="pssword">Password</label>
-
+                            <div className="left">
+                                <label for="password">Password</label>
+                            </div>
                             <input
                                 type="password"
                                 id="password"
                                 name="password"
                                 onChange={this.handelchange}
-                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                 value={this.state.password}
                                 title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
                                 required
